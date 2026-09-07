@@ -1,6 +1,6 @@
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View } from "react-native";
 
-import { useAuth } from '@/providers/auth-provider';
+import { useAuth } from "@/providers/auth-provider";
 
 export default function Index() {
   const { session, signOut } = useAuth();

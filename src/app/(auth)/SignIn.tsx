@@ -33,8 +33,6 @@ export default function SignInScreen() {
 
     if (error) {
       Alert.alert("Error", error.message + ".");
-    } else {
-      router.replace("../(tabs)/");
     }
   };
 

@@ -72,7 +72,7 @@ export default function SignUpInfo() {
     }
 
     await refreshOnboardingStatus();
-    router.replace("/(tabs)");
+    router.replace("/HomeTab");
   };
 
   const onBirthdayChange = (_event: unknown, selectedDate: Date) => {
