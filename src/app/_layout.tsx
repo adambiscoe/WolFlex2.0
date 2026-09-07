@@ -15,7 +15,7 @@ function RootNavigator() {
   const { session, isLoading: isAuthLoading, isOnboarded } = useAuth();
   const router = useRouter();
   const [fontsLoaded] = useFonts({
-    "Anton SC Regular": require("../../assets/fonts/Anton SC Regular.ttf"),
+    "Anton SC Regular": require("../../assets/fonts/AntonSCRegular.ttf"),
   });
   const [assets] = useAssets([require("../../assets/images/WordLogo.png")]);
 
@@ -41,6 +41,7 @@ function RootNavigator() {
       </Stack.Protected>
       <Stack.Protected guard={!!session}>
         <Stack.Screen name="(tabs)" options={{ animation: "slide_from_right" }} />
+        <Stack.Screen name="Settings" options={{ animation: "slide_from_right" }} />
       </Stack.Protected>
       <Stack.Protected guard={!session}>
         <Stack.Screen name="(auth)" options={{ animation: "slide_from_left" }} />
