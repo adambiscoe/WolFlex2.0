@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
 import { AuthProvider, useAuth } from "@/providers/auth-provider";
+import { WorkoutProvider } from "@/providers/workout-provider";
 
 import "../../global.css";
 
@@ -54,7 +55,9 @@ export default function RootLayout() {
   return (
     <KeyboardProvider>
       <AuthProvider>
-        <RootNavigator />
+        <WorkoutProvider>
+          <RootNavigator />
+        </WorkoutProvider>
       </AuthProvider>
     </KeyboardProvider>
   );
