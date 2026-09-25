@@ -25,6 +25,7 @@ function emptySet(): WorkoutSet {
 
 type WorkoutContextValue = {
   isActive: boolean;
+  startedAt: number | null;
   elapsedSeconds: number;
   workoutExercises: WorkoutExercise[];
   startWorkout: () => void;
@@ -133,6 +134,7 @@ export function WorkoutProvider({ children }: PropsWithChildren) {
     <WorkoutContext.Provider
       value={{
         isActive: startedAt !== null,
+        startedAt,
         elapsedSeconds,
         workoutExercises,
         startWorkout,

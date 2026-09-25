@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useRouter } from "expo-router";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { SlideInUp, SlideOutDown } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,6 +16,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ExerciseListItem, type Exercise } from "@/components/Exercise";
 import { WorkoutExerciseCard } from "@/components/WorkoutExerciseCard";
 import { supabase } from "@/lib/supabase";
+import { saveWorkout } from "@/lib/workout-history";
+import { useAuth } from "@/providers/auth-provider";
 import { useWorkout } from "@/providers/workout-provider";
 
 function formatElapsed(totalSeconds: number) {
@@ -24,13 +27,17 @@ function formatElapsed(totalSeconds: number) {
 }
 
 export default function ExerciseTab() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAddingExercises, setIsAddingExercises] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
+  const { session } = useAuth();
   const {
     isActive,
+    startedAt,
     elapsedSeconds,
     workoutExercises,
     startWorkout,
@@ -50,6 +57,27 @@ export default function ExerciseTab() {
         },
       ],
     );
+  };
+
+  const finishWorkout = async () => {
+    if (!session || startedAt === null || isSaving) return;
+
+    setIsSaving(true);
+    const { error } = await saveWorkout(
+      startedAt,
+      elapsedSeconds,
+      workoutExercises,
+    );
+    setIsSaving(false);
+
+    if (error) {
+      Alert.alert("Error", error);
+      return;
+    }
+
+    endWorkout();
+    setQuery("");
+    setExercises([]);
   };
 
   useEffect(() => {
@@ -117,13 +145,21 @@ export default function ExerciseTab() {
   if (!isActive) {
     return (
       <SafeAreaView className="flex-1 bg-white" edges={["left", "right"]}>
-        <View className="px-4 pt-4">
+        <View className="flex-row gap-2 px-4 pt-4">
           <TouchableOpacity
             onPress={startWorkout}
-            className="items-center rounded-lg bg-wolf-red py-3"
+            className="flex-1 items-center rounded-lg bg-wolf-red py-3"
           >
             <Text className="font-wolFlex text-md text-white">
               START WORKOUT
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => router.push("/WorkoutHistory")}
+            className="items-center justify-center rounded-lg border border-wolf-red px-4"
+          >
+            <Text className="font-wolFlex text-sm text-wolf-red">
+              History
             </Text>
           </TouchableOpacity>
         </View>
@@ -194,15 +230,17 @@ export default function ExerciseTab() {
 
         <View className="border-t border-neutral-100 px-4 py-3">
           <TouchableOpacity
-            onPress={endWorkout}
-            className="items-center rounded-lg bg-wolf-red py-3"
+            onPress={finishWorkout}
+            disabled={isSaving}
+            className="items-center rounded-lg bg-wolf-red py-3 disabled:opacity-50"
           >
             <Text className="font-wolFlex text-md text-white">
-              FINISH WORKOUT
+              {isSaving ? "SAVING…" : "FINISH WORKOUT"}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={cancelWorkout}
+            disabled={isSaving}
             className="mt-2 items-center"
           >
             <Text className="mt-2 text-center font-wolFlex text-sm text-wolf-red">
