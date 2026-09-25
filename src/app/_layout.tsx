@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
 import { AuthProvider, useAuth } from "@/providers/auth-provider";
+import { WorkoutProvider } from "@/providers/workout-provider";
 
 import "../../global.css";
 
@@ -42,6 +43,14 @@ function RootNavigator() {
       <Stack.Protected guard={!!session}>
         <Stack.Screen name="(tabs)" options={{ animation: "slide_from_right" }} />
         <Stack.Screen name="Settings" options={{ animation: "slide_from_right" }} />
+        <Stack.Screen
+          name="WorkoutHistory"
+          options={{ animation: "slide_from_right" }}
+        />
+        <Stack.Screen
+          name="WorkoutDetail/[id]"
+          options={{ animation: "slide_from_right" }}
+        />
       </Stack.Protected>
       <Stack.Protected guard={!session}>
         <Stack.Screen name="(auth)" options={{ animation: "slide_from_left" }} />
@@ -54,7 +63,9 @@ export default function RootLayout() {
   return (
     <KeyboardProvider>
       <AuthProvider>
-        <RootNavigator />
+        <WorkoutProvider>
+          <RootNavigator />
+        </WorkoutProvider>
       </AuthProvider>
     </KeyboardProvider>
   );
