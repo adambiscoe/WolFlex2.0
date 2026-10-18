@@ -51,6 +51,10 @@ function RootNavigator() {
           name="WorkoutDetail/[id]"
           options={{ animation: "slide_from_right" }}
         />
+        <Stack.Screen
+          name="PostDetail/[id]"
+          options={{ animation: "slide_from_right" }}
+        />
       </Stack.Protected>
       <Stack.Protected guard={!session}>
         <Stack.Screen name="(auth)" options={{ animation: "slide_from_left" }} />
